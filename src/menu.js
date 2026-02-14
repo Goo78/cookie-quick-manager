@@ -164,6 +164,18 @@
     }
 
     function createWindow(createData) {
+        /**
+         * Opens the Cookie Manager interface in either a new tab or a new window.
+         * 
+         * Note: This uses the user preference 'open_in_new_tab' (stored in local storage),
+         * which is different from the manifest.json property 'options_ui.open_in_tab'.
+         * 
+         * - 'open_in_new_tab' (user pref): Controls how the MAIN cookie manager opens
+         * - 'options_ui.open_in_tab' (manifest): Controls how the OPTIONS/SETTINGS page opens
+         * 
+         * Default behavior: open_in_new_tab = true (opens in tab)
+         * On Android: Always forced to open in tab (windows not supported)
+         */
         // Get settings
         let get_settings = browser.storage.local.get(["addonSize", "open_in_new_tab"]);
         get_settings.then((items) => {
