@@ -52,7 +52,14 @@
             set_option({'skin': $(this).val()});
         });
         $('#open_in_new_tab').change(function() {
-            // Delete all cookies when the browser restarts
+            /**
+             * User preference for how the main cookie manager interface opens:
+             * - true: Opens in a new tab (default, required for Android)
+             * - false: Opens in a new window (not available on Android)
+             * 
+             * Note: This is different from manifest.json's 'options_ui.open_in_tab'
+             * which controls how THIS options page opens.
+             */
             set_option({'open_in_new_tab': $(this).is(':checked')});
         });
         $('#display_deletion_alert').change(function() {
@@ -177,7 +184,14 @@
     }
 
     function get_options() {
-        // Load options from storage and update the interface
+        /**
+         * Load options from storage and update the interface.
+         * 
+         * Default values:
+         * - open_in_new_tab: true (main cookie manager opens in tab by default)
+         * - display_deletion_alert: true (show warning before deleting context cookies)
+         * - prevent_protected_cookies_deletion: true (protect cookies from site deletion)
+         */
         let get_settings = browser.storage.local.get({
             delete_all_on_restart: false,
             import_protected_cookies: false,
@@ -225,8 +239,14 @@
     }
 
     function display_features_depending_on_OS() {
-        // Display features according to the capacities of the OS
-
+        /**
+         * Display or hide features based on the operating system capabilities.
+         * 
+         * On Android: Hides the 'open_in_new_tab' toggle because:
+         * - Firefox for Android doesn't support browser.windows API
+         * - The option is automatically set to true (tab mode only)
+         * - Window mode is not available on mobile
+         */
         let gettingInfo = browser.runtime.getPlatformInfo();
         gettingInfo.then((info) => {
             // On Android, the addon must be opened in a new tab

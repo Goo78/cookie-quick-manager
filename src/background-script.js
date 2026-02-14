@@ -30,7 +30,13 @@ function update_listener(details) {
     // Detect the current platform
     let gettingInfo = browser.runtime.getPlatformInfo();
     gettingInfo.then((info) => {
-        // On Android, the addon must be opened in a new tab
+        /**
+         * On Android, the cookie manager interface must always open in a new tab
+         * because Firefox for Android doesn't support the browser.windows API.
+         * 
+         * This sets the 'open_in_new_tab' user preference to true and locks it
+         * for Android devices. The preference toggle is hidden in options UI.
+         */
         if (info.os == 'android')
             return browser.storage.local.set({open_in_new_tab: true});
     })
